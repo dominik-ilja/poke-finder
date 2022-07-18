@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 
@@ -14,7 +14,6 @@ import {
   formatMeasurement,
   formatWord,
 } from "../utilities/utilities";
-import arrow from "../assets/arrow.svg";
 import MovePokemonPage from "../components/MovePokemonPage";
 
 function formatStat(stat) {
