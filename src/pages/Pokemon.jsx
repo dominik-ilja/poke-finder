@@ -1,209 +1,170 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import { v4 as uuid } from "uuid";
+import formatDex from "../helpers/formatDex"
 
-import Title from "../components/Title";
-import Text from "../components/Text";
-import Type from "../components/Type";
-import SubTitle from "../components/SubTitle";
-import Spinner from "../components/Spinner";
+import Container from "../components/ui/Container"
+import Title from "../components/ui/Title";
+import SubTitle from "../components/ui/SubTitle"
+import Spinner from "../components/ui/Spinner";
+import Type from "../components/ui/Type"
 
-import {
-  formatDex,
-  formatMeasurement,
-  formatWord,
-} from "../utilities/utilities";
-import MovePokemonPage from "../components/MovePokemonPage";
-
-function formatStat(stat) {
-  switch (stat) {
-    case "hp":
-      return "HP";
-    case "attack":
-      return "ATK";
-    case "defense":
-      return "DEF";
-    case "special-attack":
-      return "SP. ATK";
-    case "special-defense":
-      return "SP. DEF";
-    case "speed":
-      return "SPD";
-    default:
-      throw new Error("Unexpected Case!");
-  }
-}
+import { getPokemonPageData } from "../api/api";
+import extractflavorText from "../helpers/extractFlavorText";
+import PokemonStatContainer from "../components/pokemon/PokemonStatContainer";
+import PokemonText from "../components/pokemon/PokemonText";
+import PokemonPicture from "../components/pokemon/PokemonPicture";
+import PokemonEvolutions from "../components/pokemon/PokemonEvolutions";
+import formatWord from "../helpers/formatWord";
+import formatMeasurement from "../helpers/formatMeasurement"
+import PokemonMovePage from "../components/pokemon/PokemonMovePage";
 
 export default function Pokemon(props) {
   const { pokemonid } = useParams();
-  const [data, setData] = useState(null);
-
+  const [pokemonInfo, setPokemonInfo] = useState({})
+  console.log(pokemonInfo);
+  
   useEffect(() => {
     async function getInfo() {
-      try {
-        const base_url = "https://pokeapi.co/api/v2/";
-        const endpoint = "pokemon/";
-        const id = Number(pokemonid);
-        const generalInfo = await axios.get(base_url + endpoint + id);
-        const speciesInfo = await axios.get(generalInfo.data.species.url);
-        const firstEntry = 1;
-        const lastEntry = 905;
-        let next = null;
-        let prev = null;
-
-        // get next pokemon entry
-        if (id < lastEntry) {
-          const response = await axios.get(base_url + endpoint + (id + 1));
-          next = response.data;
-        }
-
-        // get previous pokemon entry
-        if (id > firstEntry) {
-          const response = await axios.get(base_url + endpoint + (id - 1));
-          prev = response.data;
-        }
-
-        const data = {
-          ...generalInfo.data,
-          ...speciesInfo.data,
-          next,
-          prev,
-        };
-        setData(data);
-      } catch (error) {
-        console.log(error);
-      }
+      const info = await getPokemonPageData(pokemonid)
+      setPokemonInfo(info);
     }
     getInfo();
-  }, [pokemonid]);
+  }, [pokemonid])
 
-  console.log(useParams());
-  console.log("data: ", data);
 
-  if (data === null) {
-    return <Spinner />;
-  } else {
-    console.log(data.weight);
-    console.log("next: ", data.next);
-    console.log("prev: ", data.prev);
+  if (Object.keys(pokemonInfo).length === 0) {
+    return <Spinner fill="#fff" className="w-32" />
+  }
+  else {
+
+
+
     return (
-      <>
-        <Title className="capitalize">{data.name}</Title>
-
-        <div className="flex justify-center items-center">
-          <img
-            src={data.sprites.other["official-artwork"].front_default}
-            alt=""
-          />
+      <Container>
+        <Title className={`capitalize mb-14 text-2xl text-white`}>{pokemonInfo.name} {formatDex(pokemonInfo.id)}</Title>
+        <div className="flex flex-col gap-y-12 justify-between items-center mb-12 md:mb-24 lg:flex-row">
+          <PokemonPicture sprite={pokemonInfo.sprites.other['official-artwork'].front_default} alt={pokemonInfo.name} />
+          <PokemonText className="text-center">{extractflavorText(pokemonInfo.flavor_text_entries)}</PokemonText>
         </div>
+        <div className="flex flex-col gap-y-12 justify-evenly mb-12 md:mb-24 md:flex-row">
+            {/*  */}
+            <div className="flex-1">
+              {/* <SubTitle className="text-left">Stats</SubTitle> */}
+              <PokemonStatContainer stats={pokemonInfo.stats} type={pokemonInfo.types[0].type.name} />
+            </div>
 
-        <Text className="text-center">
-          {data.flavor_text_entries[0].flavor_text}
-        </Text>
-
-        {/* Stats */}
-        <SubTitle>Stats</SubTitle>
-        <div className="grid grid-cols-3 gap-2 mb-8">
-          {/* Stat */}
-          {data.stats.map(stat => {
-            return (
-              <div key={uuid()}>
-                <div className="font-semibold text-center uppercase bg-light">
-                  {formatStat(stat.stat.name)}
+            {/* Stats Group 1 */}
+            <div className="flex flex-col flex-1 gap-y-12">
+              {/* Type */}
+              <div>
+                <SubTitle className="text-center">Type</SubTitle>
+              <div className="flex gap-x-2 justify-center">
+                {
+                  pokemonInfo.types.map(({type}) => <Type className="max-w-[180px]" value={type.name} />)
+                }
+                  {/* <Type className="max-w-[180px]" value="grass" />
+                  <Type className="max-w-[180px]" value="poison" /> */}
                 </div>
-                <div className="text-center">{stat.base_stat}</div>
               </div>
-            );
-          })}
-        </div>
+              {/* Abilities */}
+              <div>
+                <SubTitle className="text-center">Abilities</SubTitle>
+              <div className="flex flex-col gap-2 justify-center items-center">
+                {
+                  pokemonInfo.abilities.map(({ability}) => {
+                    const classes = "text-lg font-medium text-white dark:text-dark-text"
+                    return <div className={classes}>{formatWord(ability.name)}</div>
 
-        {/* Type */}
-        <SubTitle>Type</SubTitle>
-        <div className="flex gap-x-2 justify-center mb-8">
-          {data.types.map(({ type }) => (
-            <Type key={uuid()} type={type.name} />
-          ))}
-        </div>
+                  })
+                }
+                </div>
+              </div>
 
-        {/* Abilities */}
-        <SubTitle>Abilities</SubTitle>
-        <div className="flex gap-x-2 justify-center mb-8 capitalize">
-          {data.abilities.map(({ ability }) => (
-            <div key={uuid()}>{formatWord(ability.name)}</div>
-          ))}
-        </div>
+              {/* Growth */}
+              <div>
+                <SubTitle className="text-center">Growth</SubTitle>
+                <div className="flex gap-x-2 justify-center">
+                <div className="text-lg font-medium text-white dark:text-dark-text">{formatWord(pokemonInfo.growth_rate.name)}</div>
+                </div>
+              </div>
+            </div>
 
-        <div className="grid grid-cols-3 gap-y-8 mb-8">
-          {/* Dex */}
-          <div className="flex flex-col items-center">
-            <SubTitle>Dex</SubTitle>
-            <div>{formatDex(data.id)}</div>
-          </div>
-          {/* Height */}
-          <div className="flex flex-col items-center">
-            <SubTitle>Height</SubTitle>
-            <div>{formatMeasurement(data.height)} m</div>
-          </div>
-          {/* Weight */}
-          <div className="flex flex-col items-center">
-            <SubTitle>Weight</SubTitle>
-            <div>{formatMeasurement(data.weight)} kg</div>
-          </div>
         </div>
-
-        <div className="grid grid-cols-2 gap-y-8 mb-8">
-          {/* Growth */}
-          <div className="flex flex-col items-center">
-            <SubTitle>Growth</SubTitle>
-            <div className="capitalize">
-              {formatWord(data.growth_rate.name)}
+        {/* evolutions */}
+        <div className="mb-24">
+          <SubTitle className="text-center">Evolutions</SubTitle>
+          <PokemonEvolutions evolutions={pokemonInfo.evolutionInfo} id={pokemonInfo.id} />
+        </div>
+        
+        {/* additional info */}
+        <div className={`grid grid-cols-1 gap-6 p-4 mb-12 border-4 border-white dark:border-dark-bg bg-type-${pokemonInfo.types[0].type.name}`}>
+          
+          <div className="grid grid-cols-2">
+            <div className="flex flex-col items-center">
+              <SubTitle className="text-white no-underline">Height</SubTitle>
+              <div className="text-white">{formatMeasurement(pokemonInfo.height)} m</div>
+            </div>
+            <div className="flex flex-col items-center">
+              <SubTitle className="text-white no-underline">Weight</SubTitle>
+              <div className="text-white">{formatMeasurement(pokemonInfo.weight)} kg</div>
             </div>
           </div>
-          {/* Habitat */}
-          <div className="flex flex-col items-center">
-            <SubTitle>Habitat</SubTitle>
-            <div className="capitalize">{formatWord(data.habitat.name)}</div>
+          <div className="grid grid-cols-2">
+            <div className="flex flex-col items-center">
+              <SubTitle className="text-white no-underline">Base Happiness</SubTitle>
+              <div className="text-white">{pokemonInfo.base_happiness}</div>
+            </div>
+            <div className="flex flex-col items-center">
+              <SubTitle className="text-white no-underline">Base Experience</SubTitle>
+              <div className="text-white">{pokemonInfo.base_experience}</div>
+            </div>
           </div>
-
-          {/* Egg Groups */}
-          <div className="flex flex-col items-center">
-            <SubTitle>Egg Groups</SubTitle>
-            {data.egg_groups.map(({ name }) => (
-              <div className="capitalize">{name}</div>
-            ))}
+          <div className="grid grid-cols-2">
+            <div className="flex flex-col items-center">
+              <SubTitle className="text-white no-underline">Capture Rate</SubTitle>
+              <div className="text-white">{pokemonInfo.capture_rate}</div>
+            </div>
+            <div className="flex flex-col items-center">
+              <SubTitle className="text-white no-underline">Color</SubTitle>
+              <div className="text-white">{formatWord(pokemonInfo.color.name)}</div>
+            </div>
           </div>
-          {/* Base Happiness */}
-          <div className="flex flex-col items-center">
-            <SubTitle>Base Happiness</SubTitle>
-            <div>{data.base_happiness}</div>
+          <div className="grid grid-cols-2">
+            <div className="flex flex-col items-center">
+              <SubTitle className="text-white no-underline">Egg Groups</SubTitle>
+                {
+                pokemonInfo.egg_groups.map(group => <div className="text-white">{formatWord(group.name)}</div>)
+                }
+            </div>
+            <div className="flex flex-col items-center">
+              <SubTitle className="text-white no-underline">Habitat</SubTitle>
+              <div className="text-white">
+                {pokemonInfo.habitat ? formatWord(pokemonInfo.habitat.name) : "Unknown"}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Evolution Line */}
-        <SubTitle className="mb-8">Evolution Line</SubTitle>
-
-        {/* Next / Prev Entry */}
-        <div className="flex justify-between mb-8">
-          <div>
-            {data.prev && (
-              <MovePokemonPage
-                href={`/pokemon/${data.prev.id}`}
-                src={data.prev.sprites.front_default}
+      {/* Next / Prev Entry */}
+        <div className="flex justify-between">
+            {pokemonInfo.prev && (
+              <PokemonMovePage
+                href={`/pokemon/${pokemonInfo.prev.id}`}
+                src={pokemonInfo.prev.sprites.front_default}
                 type="left"
               />
             )}
-          </div>
-          <div>
-            {data.next && (
-              <MovePokemonPage
-                href={`/pokemon/${data.next.id}`}
-                src={data.next.sprites.front_default}
+
+            {pokemonInfo.next && (
+              <PokemonMovePage
+                href={`/pokemon/${pokemonInfo.next.id}`}
+                src={pokemonInfo.next.sprites.front_default}
               />
             )}
-          </div>
         </div>
-      </>
+      </Container>
     );
+
   }
-}
+
+};
