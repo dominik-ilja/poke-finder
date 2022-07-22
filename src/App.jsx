@@ -18,8 +18,7 @@ function App() {
   console.log(data);
   useEffect(() => {
     async function getData() {
-      const result = await getPokemonData(133);
-      // const result = [];
+      const result = await getPokemonData(905);
       setData(result)
     }
     getData()
