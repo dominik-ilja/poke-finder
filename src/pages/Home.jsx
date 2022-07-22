@@ -28,6 +28,7 @@ export default function Home(props) {
       <Text>
         Having an issue? File a bug report on <Link href="https://github.com/Dominik-Ilja/poke-finder">GitHub!</Link>
       </Text>
+      <Text className="font-semibold underline">Currently experiencing issues with the Poke API giving broken URLs for images</Text>
     </Container>
   );
 };
