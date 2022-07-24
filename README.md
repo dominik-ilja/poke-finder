@@ -29,8 +29,6 @@ Some stretch goals :
 2. Hamburger menu for mobile displays
 3. Storing Pokemon information in state to prevent unneccessary data fetching
 
-## Component Hierarchy
-
 ## App Images
 ![home page](images/home/home.png)
 ![pokedex page](images/pokedex/pokedex.png)
@@ -38,6 +36,9 @@ Some stretch goals :
 
 ![clamperl](images/clamperl/clamperl.png)
 ![wurmple](images/wurmple/wurmple.png)
+
+## Component Hierarchy
+![component hierarchy](/images/component.png)
 
 ## Original Wireframes
 

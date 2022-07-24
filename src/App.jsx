@@ -15,10 +15,10 @@ const pageContainerClasses = "flex-1 py-12 bg-fixed bg-center bg-no-repeat bg-li
 
 function App() {
   const [data, setData] = useState([]);
-  console.log(data);
+
   useEffect(() => {
     async function getData() {
-      const result = await getPokemonData(905);
+      const result = await getPokemonData(5);
       setData(result)
     }
     getData()

@@ -4,8 +4,10 @@ import IconArrow from "../../assets/IconArrow";
 
 export default function PokemonMovePage(props) {
   let jsx = null;
+  let classes = "";
 
   if (props.type === "left") {
+    classes = "mr-auto";
     jsx = (
       <>
         <IconArrow className="w-4 text-white rotate-180" />
@@ -15,6 +17,7 @@ export default function PokemonMovePage(props) {
       </>
     );
   } else {
+    classes = "ml-auto";
     jsx = (
       <>
         {props.children}
@@ -26,8 +29,8 @@ export default function PokemonMovePage(props) {
   }
 
   return (
-    <Link to={props.href} onClick={() => window.scrollTo(0, 0)}>
-      <div className="flex gap-2 items-center">{jsx}</div>
+    <Link className={classes} to={props.href} onClick={() => window.scrollTo(0, 0)}>
+      <div className="flex items-center gap-2">{jsx}</div>
     </Link>
   );
 }
