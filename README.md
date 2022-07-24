@@ -32,26 +32,12 @@ Some stretch goals :
 ## Component Hierarchy
 
 ## App Images
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
-  <img src="images/home/home-light.png" />
-  <img src="images/home/home-dark.png" />
-  <img src="images/pokedex/pokedex-light.png" />
-  <img src="images/pokedex/pokedex-dark.png" />
-</div>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-  <img src="images/clamperl/clamperl-1-of-3.png" />
-  <img src="images/clamperl/clamperl-2-of-3.png" />
-  <img src="images/clamperl/clamperl-3-of-3.png" />
-  <img src="images/clamperl/clamperl-dark-1-of-3.png" />
-  <img src="images/clamperl/clamperl-dark-2-of-3.png" />
-  <img src="images/clamperl/clamperl-dark-3-of-3.png" />
-  <img src="images/wurmple/wurmple-1-of-3.png" />
-  <img src="images/wurmple/wurmple-2-of-3.png" />
-  <img src="images/wurmple/wurmple-3-of-3.png" />
-  <img src="images/wurmple/wurmple-dark-1-of-3.png" />
-  <img src="images/wurmple/wurmple-dark-2-of-3.png" />
-  <img src="images/wurmple/wurmple-dark-3-of-3.png" />
-</div>
+![home page](images/home/home.png)
+![pokedex page](images/pokedex/pokedex.png)
+
+
+![clamperl](images/clamperl/clamperl.png)
+![wurmple](images/wurmple/wurmple.png)
 
 ## Original Wireframes
 
