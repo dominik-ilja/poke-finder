@@ -15,7 +15,7 @@ export default function Pokedex(props) {
 
   return (
     <Container>
-      <SearchFilter onChange={term => setSearchFilter(term)} />
+      <SearchFilter onChange={term => setSearchFilter(term.toLowerCase())} />
       <TypeFilter selection={typeFilter} onClick={type => setTypeFilter(type)} />
       <PokemonList data={props.data} typeFilter={typeFilter} searchFilter={searchFilter} />
     </Container>

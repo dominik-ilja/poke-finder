@@ -21,7 +21,6 @@ import PokemonAdditionalInfo from "../components/pokemon/PokemonAdditionalInfo";
 export default function Pokemon(props) {
   const { pokemonid } = useParams();
   const [pokemonInfo, setPokemonInfo] = useState({})
-  console.log(pokemonInfo);
   
   useEffect(() => {
     async function getInfo() {
