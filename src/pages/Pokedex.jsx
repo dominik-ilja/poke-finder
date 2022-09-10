@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Container from "../components/ui/Container";
 import PokemonList from "../components/pokemon/PokemonList";
@@ -15,7 +15,7 @@ export default function Pokedex(props) {
 
   return (
     <Container>
-      <SearchFilter onChange={term => setSearchFilter(term)} />
+      <SearchFilter value={searchFilter} onChange={e => setSearchFilter(e.target.value)} />
       <TypeFilter selection={typeFilter} onClick={type => setTypeFilter(type)} />
       <PokemonList data={props.data} typeFilter={typeFilter} searchFilter={searchFilter} />
     </Container>
