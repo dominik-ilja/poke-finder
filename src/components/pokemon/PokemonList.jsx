@@ -38,9 +38,15 @@ export default function PokemonList(props) {
   } 
 
   const rows = filteredList.map(item => {
-    const { id, ...info } = extractPokemonData(item)
-    const classes = "grid grid-cols-4 border-b-gray-100 dark:border-b-dark-default border-b-2 last:border-b-0"
-    return <PokemonRow className={classes} id={id} info={info} key={uuid()} />
+    const { id, ...info } = extractPokemonData(item);
+    
+    return (
+      <PokemonRow className="grid grid-cols-4 border-b-2 border-b-gray-100 dark:border-b-dark-default last:border-b-0"
+        id={id}
+        info={info}
+        key={uuid()}
+      />
+    )
   })
 
   return (
@@ -49,7 +55,7 @@ export default function PokemonList(props) {
       {
         rows.length > 0 ?
           rows :
-          <div className="col-span-full mt-4 font-semibold text-center">No Pokemon Found</div>
+          <div className="mt-4 font-semibold text-center col-span-full">No Pokemon Found</div>
       }
     </div>
   );
