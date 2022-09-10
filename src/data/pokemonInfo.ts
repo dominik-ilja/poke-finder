@@ -1,4 +1,4 @@
-const pokemonTypes = [
+const pokemonTypes: PokemonType[] = [
   "bug",
   "dark",
   "dragon",
